@@ -28,6 +28,7 @@ class Economy:
         self.government_taxation_rate = 0.05
         self.private_saving_rate      = 0.05
         
+        # time series records
         self.government_spending_record  = [0.0]
         self.government_taxation_record  = [0.0]
         self.private_sector_income       = [0.0]
