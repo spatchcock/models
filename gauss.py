@@ -13,11 +13,12 @@ Created on Fri Jan 31 21:20:55 2014
 # within 1 standard deviation of the mean. I wanted to figure out the 
 # corresponding proprtion for a 2D normal distribution.
 #
-# Turns out to be ~46.5%
+# Turns out to be ~39.3% (and verified analytically elsewhere)
 
 import numpy
 import matplotlib.pyplot as plt
 import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
 
 domain_range = 500
 
@@ -70,7 +71,13 @@ plt.show()
 #
 # (Integration is simple since grid resolution is unity.No *dx *dy needed.)
 #
-print(sum(g[domain_range/2-stdevx:domain_range/2+stdevx, domain_range/2-stdevy:domain_range/2+stdevy])/sum(g))
+within_one_stdev = []
+for i in numpy.arange(0, size(x), 1):
+        for j in numpy.arange(0, size(y), 1):
+            if math.sqrt(x[i]**2 + y[j]**2) <= stdevx:
+                within_one_stdev.append(g[i][j])
+            
+print(sum(within_one_stdev)/sum(g))
 
 # Calculate the area within 1 standard deviation as proportion of whole for just the central cross-section
 print(sum(g[domain_range/2, domain_range/2-stdevy:domain_range/2+stdevy])/sum(g[domain_range/2]))
