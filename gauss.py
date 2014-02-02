@@ -69,15 +69,21 @@ plt.show()
 
 # Calculate the volume within 1 standard deviation as proportion of whole
 #
-# (Integration is simple since grid resolution is unity.No *dx *dy needed.)
+# (Integration is simple since grid resolution is unity. No *dx *dy needed.)
 #
 within_one_stdev = []
 for i in numpy.arange(0, size(x), 1):
         for j in numpy.arange(0, size(y), 1):
+            
+            # Use pythagoras to find those cells within 1 std dev
             if math.sqrt(x[i]**2 + y[j]**2) <= stdevx:
                 within_one_stdev.append(g[i][j])
             
+            
+print("Proportion of volume underneath a 2D gaussian surface within 1 standard deviation from the mean is...")
 print(sum(within_one_stdev)/sum(g))
 
 # Calculate the area within 1 standard deviation as proportion of whole for just the central cross-section
+
+print("Proportion of area underneath a 1D gaussian surface within 1 standard deviation from the mean is...")
 print(sum(g[domain_range/2, domain_range/2-stdevy:domain_range/2+stdevy])/sum(g[domain_range/2]))
