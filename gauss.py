@@ -15,7 +15,6 @@ Created on Fri Jan 31 21:20:55 2014
 #
 # Turns out to be ~39.3% (and verified analytically elsewhere)
 
-import numpy
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
