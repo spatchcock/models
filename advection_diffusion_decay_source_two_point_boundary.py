@@ -21,11 +21,11 @@ import numpy as np
 #   (D/dx**2 + w/(2*dx))*C{x-1} + (-(2*D)/(dx**2) - u)*C{x} + (D/dx**2 - w/(2*dx))*C{x+1} = -R(x)
 #
 # So
-#   c = D/dx**2 + w/(2*dx)
-#   d = -(2*D)/(dx**2) - u
-#   e = D/dx**2 - w/(2*dx)
+#   a = D/dx**2 + w/(2*dx)
+#   b = -(2*D)/(dx**2) - u
+#   c = D/dx**2 - w/(2*dx)
 #
-#   b = -R(x)
+#   d = -R(x)
 #
 # Boundaries
 #
@@ -65,7 +65,7 @@ m = 1000     # Number of mesh spaces
 dx = (xStop - xStart)/m # step size
 x = np.arange(xStart,xStop + dx, dx)
 
-u = 0.05 # decay
+u = 0.07 # decay
 D = 0.008  # diffusion
 w = 0.5 # advection
 R = 50.0*np.exp(-0.1*x) # production
@@ -98,6 +98,9 @@ d[-1] = Z
 
 C = TDMAsolver(a,b,c,d)
 plot(x[0:-2], C)
+ylim(0)
+xlim([0,xStop+1])
+grid()
 
 
 
