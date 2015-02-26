@@ -7,14 +7,17 @@ Created on Sat May  3 21:38:54 2014
 import numpy as np
 import matplotlib.pyplot as plt
 
+# %% Import data
 
-high_file = '/home/spatchcock/Documents/assemblage/marmic/hippensteel_total_high_marsh.csv'
-intm_file = '/home/spatchcock/Documents/assemblage/marmic/hippensteel_total_intermediate_marsh.csv'
-low_file  = '/home/spatchcock/Documents/assemblage/marmic/hippensteel_total_low_marsh.csv'
+high_file = './data/hippensteel_total_high_marsh.csv'
+intm_file = './data/hippensteel_total_intermediate_marsh.csv'
+low_file  = './data/hippensteel_total_low_marsh.csv'
 
 high_data = np.genfromtxt(high_file, dtype=float, delimiter=',', names=True) 
 intm_data = np.genfromtxt(intm_file, dtype=float, delimiter=',', names=True) 
 low_data  = np.genfromtxt(low_file,  dtype=float, delimiter=',', names=True) 
+
+# %% Function for building subplots
 
 def add_subplot(master_fig, csv, species, plot_index):
     plot = master_fig.add_subplot(3,5,plot_index, xlim=(0.0,max(csv[species + '_Dead'])), ylim=(60.0, 0))
@@ -29,7 +32,8 @@ def add_subplot(master_fig, csv, species, plot_index):
     
     plot.plot(y,x)
     
-
+# %% Create plots
+    
 fig = plt.figure()
 add_subplot(fig, high_data, 'AMEX',1)
 add_subplot(fig, high_data, 'MFUS',2)
@@ -46,5 +50,6 @@ add_subplot(fig, low_data,  'MFUS',12)
 add_subplot(fig, low_data,  'PLIM',13)
 add_subplot(fig, low_data,  'TINF',14)
 add_subplot(fig, low_data,  'JMAC',15)
+
 fig.tight_layout()
 plt.show()
