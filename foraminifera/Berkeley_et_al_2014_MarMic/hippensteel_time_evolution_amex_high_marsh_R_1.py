@@ -24,11 +24,11 @@ import matplotlib.animation as animation
 #  C(x,0) = R{x}
 #
 
-###############################################################################
+# %%
 
-high_file = '/home/spatchcock/Documents/assemblage/marmic/hippensteel_total_high_marsh.csv'
-intm_file = '/home/spatchcock/Documents/assemblage/marmic/hippensteel_total_intermediate_marsh.csv'
-low_file  = '/home/spatchcock/Documents/assemblage/marmic/hippensteel_total_low_marsh.csv'
+high_file = './data/hippensteel_total_high_marsh.csv'
+intm_file = './data/hippensteel_total_intermediate_marsh.csv'
+low_file  = './data/hippensteel_total_low_marsh.csv'
 
 dataset = np.genfromtxt(high_file, dtype=float, delimiter=',', names=True) 
 #dataset = np.genfromtxt(intm_file, dtype=float, delimiter=',', names=True) 
@@ -56,7 +56,7 @@ sed_rate     = 0.62
 #mixing_rate  = 0.905
 #sed_rate     = 1.03
 
-###############################################################################
+# %%
 
 # Numerical scheme
 
@@ -66,14 +66,13 @@ dx = max_depth/N_x
 sigma = 0.1
 dt = sigma*dx
 
-
-###############################################################################
+# %%
 
 # Dependent and independent variables (C, x)
 x  = np.linspace(0.0,max_depth,N_x) # depth
 C  = np.zeros(N_x)                  # concentration
     
-###############################################################################
+# %%
 
 # Set up parameters
 
@@ -134,7 +133,7 @@ Ra = R*a
 # Initial conditions
 #C = Ra * dt
 
-###############################################################################
+# %%
 
 # Implement discretized equations as invokable timestep function
 
@@ -152,7 +151,7 @@ def step():
     C[-1]   = C[-2]     
 
 
-###############################################################################
+# %%
 
 # Set up plots
 
@@ -197,7 +196,7 @@ C_plot.plot(dead_data,depth_data, marker='o', linestyle='None',color='k')
 
 plt.subplots_adjust(wspace=0.3)
 
-###############################################################################
+# %%
 
 # Set up animation
 
@@ -230,7 +229,7 @@ def animate(i):
     return a_line,D_line,R_line,u_line,C_line#,step_text
 
 
-###############################################################################
+# %%
 
 # Run animation
 ani = animation.FuncAnimation(fig, animate, frames=500, interval=1, blit=True, init_func=init, repeat=False)

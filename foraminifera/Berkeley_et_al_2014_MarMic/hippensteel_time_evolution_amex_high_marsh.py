@@ -26,7 +26,7 @@ import matplotlib.animation as animation
 
 # %%
 
-high_file = '/home/spatchcock/Documents/assemblage/marmic/hippensteel_total_high_marsh.csv'
+high_file = './data/hippensteel_total_high_marsh.csv'
 
 dataset = np.genfromtxt(high_file, dtype=float, delimiter=',', names=True) 
 
