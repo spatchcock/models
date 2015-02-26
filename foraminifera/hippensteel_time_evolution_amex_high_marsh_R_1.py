@@ -86,10 +86,8 @@ w  = np.zeros(N_x)                  # advection speed (sedimentation rate)
 Cu = np.zeros(N_x)                  # memoize last timestep concentration
 
 # Sedimentation rate, constant with depth
-w[:] = sed_rate  
+w[:] = sed_rate                         
 
-###############################################################################                       
-#
 # Mixing/diffusion, constant in upper mixed zone, zero below
 max_depth_mixing  = mixing_depth
 max_x_mixing      = int(max_depth_mixing/max_depth*N_x)
@@ -100,9 +98,10 @@ max_depth_taz = max_depth_mixing
 max_x_taz = int(max_depth_taz/max_depth*N_x)
 u_0 = 0.21
 u[0:max_x_taz] = u_0
-u[max_x_taz:] = u_0*np.exp(-0.128*x[:-max_x_taz])
+u[max_x_taz:] = u_0*np.exp(-0.095*x[:-max_x_taz])
 
-#u[:]=0.65            
+u[:] = 0.38
+#u[:]=0.65                   
 
 # Production, three options, comment as required
 Ra_0 = 3.2
@@ -126,12 +125,16 @@ max_depth_r = 1.0#max_depth_mixing
 max_x_r = int(max_depth_r/max_depth*N_x)
 R_0 = 1.0
 R[0:max_x_r] = R_0
-R = R_0*np.exp(-0.135*x)
+R[max_x_r:] = R_0*np.exp(-0.12*x[:-max_x_r])
+R[:] = 1.0
 Ra = R*a
-##Ra=a
-##Ra[int(40.0/max_depth*N_x):] = 0
-###############################################################################
+#Ra=a
+#Ra[int(40.0/max_depth*N_x):] = 0
 
+# Initial conditions
+#C = Ra * dt
+
+###############################################################################
 
 # Implement discretized equations as invokable timestep function
 
@@ -155,43 +158,44 @@ def step():
 
 fig   = plt.figure()
 
-a_plot  = fig.add_subplot(151, ylim=(max_depth, 0), xlim=(0, max(live_data)*1.5))
-a_line, = a_plot.plot([], [], lw=3)
+a_plot  = fig.add_subplot(151, ylim=(max_depth, 0), xlim=(0, 3))
+a_line, = a_plot.plot([], [], linewidth=1.5,color='k')
 a_plot.grid()
-a_plot.axes.get_xaxis().set_ticks([0.0, max(Ra)])
+a_plot.axes.get_xaxis().set_ticks([0.0, 1.0, 2.0, 3.0])
 a_plot.set_xlabel('a')
-a_plot.plot(live_data, depth_data, marker='o', linestyle='None')
+a_plot.plot(live_data, depth_data, marker='o', linestyle='None',color='k')
 
-D_plot  = fig.add_subplot(153, ylim=(max_depth, 0), xlim=(0, max(D)*1.5))
-D_line, = D_plot.plot([], [], lw=3)
+D_plot  = fig.add_subplot(153, ylim=(max_depth, 0), xlim=(0, 0.3))
+D_line, = D_plot.plot([], [], linewidth=1.5,color='k')
 D_plot.grid()
 D_plot.axes.get_yaxis().set_ticklabels([])
-D_plot.axes.get_xaxis().set_ticks([0.0, max(D)])
+D_plot.axes.get_xaxis().set_ticks([0.0, 0.1, 0.2, 0.3])
 D_plot.set_xlabel('D')
 
-R_plot  = fig.add_subplot(152, ylim=(max_depth, 0), xlim=(0, max(R)*1.5))
-R_line, = R_plot.plot([], [], lw=3)
+R_plot  = fig.add_subplot(152, ylim=(max_depth, 0), xlim=(0, 1.5))
+R_line, = R_plot.plot([], [], linewidth=1.5,color='k')
 R_plot.grid()
 R_plot.axes.get_yaxis().set_ticklabels([])
-R_plot.axes.get_xaxis().set_ticks([0.0, max(w)])
+R_plot.axes.get_xaxis().set_ticks([0,.5,1.0,1.5])
 R_plot.set_xlabel('R')
 
-u_plot  = fig.add_subplot(154, ylim=(max_depth, 0), xlim=(0, max(u)*1.5))
-u_line, = u_plot.plot([], [], lw=3)
+u_plot  = fig.add_subplot(154, ylim=(max_depth, 0), xlim=(0, 0.6))
+u_line, = u_plot.plot([], [], linewidth=1.5,color='k')
 u_plot.grid()
 u_plot.axes.get_yaxis().set_ticklabels([])
-u_plot.axes.get_xaxis().set_ticks([0.0, max(u)])
+u_plot.axes.get_xaxis().set_ticks([0.0, 0.2,0.4,0.6])
 u_plot.set_xlabel('u')
 
-C_plot  = fig.add_subplot(155, ylim=(max_depth, 0), xlim=(0, max(dead_data)*1.2))
-C_line, = C_plot.plot([], [], lw=3)
-step_text = C_plot.text(0.2, 0.02, '', transform=C_plot.transAxes)
+C_plot  = fig.add_subplot(155, ylim=(max_depth, 0), xlim=(0, 8))
+C_line, = C_plot.plot([], [], linewidth=1.5,color='k')
+#step_text = C_plot.text(0.2, 0.02, '', transform=C_plot.transAxes)
 C_plot.grid()
 C_plot.axes.get_yaxis().set_ticklabels([])
+C_plot.axes.get_xaxis().set_ticks([0,2,4,6,8])
 C_plot.set_xlabel('C')
-C_plot.plot(dead_data,depth_data, marker='o', linestyle='None')
+C_plot.plot(dead_data,depth_data, marker='o', linestyle='None',color='k')
 
-plt.subplots_adjust(wspace=0.1)
+plt.subplots_adjust(wspace=0.3)
 
 ###############################################################################
 
@@ -221,15 +225,15 @@ def animate(i):
     u_line.set_data(u, x)
     C_line.set_data(C, x)
 
-    step_text.set_text('iter: %.1f' % i)
+#    step_text.set_text('iter: %.1f' % i)
 
-    return a_line,D_line,R_line,u_line,C_line,step_text
+    return a_line,D_line,R_line,u_line,C_line#,step_text
 
 
 ###############################################################################
 
 # Run animation
-ani = animation.FuncAnimation(fig, animate, frames=10000000, interval=1, blit=True, init_func=init)
+ani = animation.FuncAnimation(fig, animate, frames=500, interval=1, blit=True, init_func=init, repeat=False)
 
 plt.show()
 

@@ -43,7 +43,7 @@ class Bounce:
 
 initial_x = 5
 initial_y = 0
-u_y       = 5
+u_y       = 10
 dt        = 0.01
 
 #------------------------------------------------------------
@@ -76,6 +76,6 @@ def animate(i):
     return line, step_text
 
 ani = animation.FuncAnimation(fig, animate, frames=500,
-                              interval=100, blit=True, init_func=init)
+                              interval=10, blit=True, init_func=init)
 
 plt.show()
