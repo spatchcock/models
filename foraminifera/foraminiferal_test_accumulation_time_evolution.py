@@ -24,69 +24,110 @@ import matplotlib.animation as animation
 #  C(x,0) = R{x}
 #
 
-###############################################################################
+# %% DEFINE NUMERICAL SCHEME
 
-# Numerical scheme
+max_depth = 30.0           # maximum depth of domain of interest
+N_x       = 101            # number of nodes across 1D domain
+dx        = max_depth/N_x  # cell size (regular/uniform)
+sigma     = 0.1            # CFL sigma value. Scales the timestep according to the depth step. 
+                           # Ensures timestep is sufficiently smaller that distance step to provide
+                           # stability (although this also depends on the sedimentation rate)
+dt        = sigma*dx       # time step
 
-N_x = 101
-max_depth = 30.0
-dx = max_depth/N_x
-sigma = 0.1
-dt = sigma*dx
 
+# %% SET UP PLACEHOLDER ARRAYS FOR PARAMETERS AND VARIABLES
 
-###############################################################################
+# Each parameter and variable will be represented by a value at each node across
+# the 1D domain.
 
 # Dependent and independent variables (C, x)
 x  = np.linspace(0.0,max_depth,N_x) # depth
 C  = np.zeros(N_x)                  # concentration
-    
-###############################################################################
 
-# Set up parameters
+# Parameters -  Each parameter can, in principle vary with depth, x. Initialise arrays 
+# for each, although we can set a constant value for all x if required.
+Ra = np.zeros(N_x)     # production (product of standing crop, a, and reproduction rate, R)
+D  = np.zeros(N_x)     # diffusion (mixing rate)
+u  = np.zeros(N_x)     # taphonomic decay rate
+w  = np.zeros(N_x)     # advection speed (sedimentation rate)
+Cu = np.zeros(N_x)     # placeholder for memoizing previous timestep concentrations
 
-# Each parametercan,in principle vary withdepth, x. Initialise arrarys for each
-# although we can set a constant valueif required.
-Ra = np.zeros(N_x)                  # production
-D  = np.zeros(N_x)                  # diffusion (mixing rate)
-u  = np.zeros(N_x)                  # taphonomic decay rate
-w  = np.zeros(N_x)                  # advection speed (sedimentation rate)
-Cu = np.zeros(N_x)                  # memoize last timestep concentration
 
-# Taponomic decay, constant with depth
-u[:] = 0.005                       
+# %% DEFINE DEPTH-DEPENDENT FUNCTION FOR TAPHONOMIC DECAY
 
-# Sedimentation rate, constant with depth
+# It is likely that taphonomic decay decreases with depth so most circumstances probably
+# require a function for the taphonomic decay rate that decrease through the domain. In
+# some circumstances, considering decay rates to be constant across some or all of the domain
+# might be appropriate. Three choices are presented below. Comment/uncomment as required
+# or set u[] to another appropriate function of depth.
+
+### Constant function ###
+
+# This simply sets the same decay rate for all values of x.
+
+#u[:] = 0.005
+
+
+### Decreasing function ###
+
+# This drescribes taphonic decay rate as decreasing exponential with depth frmom
+# some maximum value at the surface. This is the simplest decreasing function that
+# asymptotes with depth.
+
+u_0           = 0.005                              # value at surface, i.e. x = 0
+u_attenuation = 0.05                               # rate at which decay rate decreases with depth
+u[0:]         = u_0 * np.exp(-u_attenuation*x[0:]) # exponentially decreasing taphonomic decay rate
+
+
+### Step function ###
+
+# This sets the decay rate as a constant across some limited upper interval of the
+# sediment. This resembles the commonly invoked concept of the Taphonomically Active Zone
+# (the "TAZ"). Of course, any other more complicated step function could be defined in a 
+# similar way.
+
+#max_depth_decay  = 10.0                               # Maximum depth of decay
+#max_x_decay      = int(max_depth_decay/max_depth*N_x) # Index of maximum decay depth
+#u[0:max_x_decay] = 0.005                              # Step function
+
+
+# %% DEFINE DEPTH DEPENDENT FUNCTION FOR SEDIMENTATION RATE
+
+# In principle, sedimentation rate may have varied during the time in which a given
+# sediment interval has accumulated. For now, we'll just assume that it is constant.
+
+### Constant function ##
 w[:] = 0.6                         
 
-# Mixing/diffusion, constant in upper mixed zone, zero below
-max_depth_mixing  = 10.0
+
+# %% DEFINE DEPTH DEPENDENT FUNCTION FOR MIXING/BIOTURBATION
+
+# constant in upper mixed zone, zero below
+max_depth_mixing  = 15.0
 max_x_mixing      = int(max_depth_mixing/max_depth*N_x)
 D[0:max_x_mixing] = 0.2399          
 
-# Production, three options, comment as required
-Ra_0 = 50.0
-Ra_attenuation = 0.5
-Ra_peak_depth  = 5
+
+# %% DEFINE DEPTH-DEPENDENT FUNCTION FOR TEST PRODUCTION
+
+Ra_0 = 30.0
+Ra_attenuation = 0.05
+Ra_peak_depth  = 2
 Ra_gamma       = 4
 max_x_Ra       = int(Ra_peak_depth/max_depth*N_x)
 
-Ra[0:max_x_Ra] = Ra_0                                                   # constant over interval
+#Ra[0:max_x_Ra] = Ra_0                                                   # constant over interval
 #Ra[0:] = Ra_0 * np.exp(-Ra_attenuation*x[0:])                           # exponential decrease
-#Ra[0:] = Ra_0 * np.exp(-Ra_attenuation*(x[0:]-Ra_peak_depth)**Ra_gamma) # subsurface peak, normally distributed
+Ra[0:] = Ra_0 * np.exp(-Ra_attenuation*(x[0:]-Ra_peak_depth)**Ra_gamma) # subsurface peak, normally distributed
 
-# Initial conditions
-#C = Ra * dt
 
-###############################################################################
-
-# Implement discretized equations as invokable timestep function
+# %% IMPLEMENT DISCRETIZED EQUATION AS INVOKABLE TIMESTEP FUNCTION
 
 def step():
     # memoize last timestep
     Cu[:]   = C[:]
     
-    # boundary, surficial layer(x=0)
+    # boundary, surficial layer (x=0)
     C[0] = dt * Ra[0]
     
     # Interior points  
@@ -96,9 +137,7 @@ def step():
     C[-1]   = C[-2]     
 
 
-###############################################################################
-
-# Set up plots
+# %% SET UP PLOTS
 
 fig   = plt.figure()
 
@@ -138,9 +177,7 @@ C_plot.set_xlabel('C')
 
 plt.subplots_adjust(wspace=0.1)
 
-###############################################################################
-
-# Set up animation
+# %% SET ANIMATION
 
 # Clear frame on each interation
 def init():
@@ -171,9 +208,7 @@ def animate(i):
     return Ra_line,D_line,w_line,u_line,C_line,step_text
 
 
-###############################################################################
-
-# Run animation
+# %% RUN ANIMATION
 ani = animation.FuncAnimation(fig, animate, frames=10000000, interval=1, blit=True, init_func=init)
 
 
