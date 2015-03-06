@@ -7,12 +7,11 @@ Created on Wed Apr  2 21:30:09 2014
 
 import numpy as np                 
 import matplotlib.pyplot as plt
-import time, sys
 import matplotlib.animation as animation
 
-# This is patt 1 of Lorena Barba's "12 steps to Navier-Stokes" series,
+# This is part 1 of Lorena Barba's "12 steps to Navier-Stokes" series,
 #
-#  http://nbviewer.ipython.org/github/barbagroup/CFDPython/blob/master/lessons/01_Step_1.ipynb
+#   http://nbviewer.ipython.org/github/barbagroup/CFDPython/blob/master/lessons/01_Step_1.ipynb
 #
 # It describes simple, linear advection in 1 dimension. The advection equation is:
 #
@@ -40,25 +39,31 @@ import matplotlib.animation as animation
 #    This makes it accurate to the order of magnitude of dx - the step size of the 
 #    space dimension, i.e. O(dx).
 # 
-# 3. Numerical diffusion. 
-#    Depending on the time and space steps, the original spatial state becomes stretched
-#    or squashed. This is because on discretization, the du/dx term gets multiplied
-#    by c.dt/du which is dimensionless. This effectively becomes the scaling factor
-#    and whether or not it is grater than or less than unity depends on all three
-#    values.
+# 3. Numerical diffusion. Altering the space step size (dx) causes the original top hat
+#    function to smooth out. This occurs when the step size is too small and the 
+#    approximation of the gradients is less accurate. Increasing the space resolution
+#    (i.e. reducing the dx size) increases the accuracy (up to a point, see below).
 #
-# 3. Cycling.
-#    The iterator starts from the first cell. This means that the backward differnce
-#    calculation uses a negative index (-1). Conveniently (?) this translates to the
-#    syntax for the last element in the u array and therefore has the effect of cycling
-#    the process back to the start. Any stretching or squashing then becomes compounding,
-#    meaning that the signal becomes dampened or amplified.
+# 4. Instability. Increasing the space resolution too much (in this case >81) causes
+#    the model to become unstable. This is because the space step becomes sufficiently
+#    small that the wave can traverse the entire space step in a single timestep - given
+#    the constant advection speed (c) and constant timestep. A better approach is to 
+#    define the timestep in relation to the space step to ensure that if the space step
+#    is decreased the timestep is decrease accordingly (see the CFL condition material).
+#
+# 5. Cycling. The iterator which updates each x position can start from either the first
+#    cell (index 0) or the second cell (1). These two options are provided in the two
+#    for-loop declarations, one of which must be commented out. Starting at index 0 causes
+#    the wave to cycle around from the end back to the beginning. This is because the 
+#    backward difference calculation uses a negative index (-1) and for the first cell this
+#    translates to the syntax for the last element in the u array, so the first cell gets 
+#    updated according to whatever is going on in the last cell.
 #
 
 # %%
 
 def step():
-    un = u.copy()       
+    un = u.copy()
   
     for i in range(nx):
     #for i in range(1,nx):
@@ -76,10 +81,11 @@ def animate(i):
     line.set_data(np.linspace(0,xmax,nx),u)
     return line,
 
+
 # %%
 
 xmax = 2.   # domain length
-nx = 75     # try changing this number from 41 to 81 and Run All ... what happens?
+nx = 81     # try changing this number from 41 to 81 and Run All ... what happens?
 dx = xmax/(nx-1)
 nt = 1      # nt is the number of timesteps we want to calculate
 dt = .025   # dt is the amount of time each timestep covers (delta t)
@@ -89,7 +95,7 @@ u  = np.ones(nx)  # numpy function ones()
 un = np.ones(nx)  # initialize a temporary array for using in each timestep
 
 # Set initial conditions
-u[.5/dx : 1/dx+1] = 2  # setting u = 2 between 0.5 and 1 as per our I.C.s
+u[.5/dx : 1/dx+1] = 5  # setting u = 2 between 0.5 and 1 as per our I.C.s
 
 
 # %%
@@ -98,6 +104,7 @@ fig = plt.figure()
 ax = fig.add_subplot(111,xlim=(0,xmax), ylim=(0,10))
 ax.grid()
 line, = ax.plot([], [], lw=3)
+
 
 # %%
 
