@@ -10,9 +10,8 @@ Created on Fri Mar 06 12:44:26 2015
 #
 # In the earlier lessons it was seen that varying the space step either caused numerical
 # diffusion (smoothing of wave as derivatives poorly approximated) or instability. As the 
-# space resolution is increased, the numerical diffusion is decreased. So increasing the 
-# space resolution reduces numerical diffusion, increasing the model accuracy but only up 
-# to a point, beyond which instability is caused.
+# space resolution is increased, the numerical diffusion is decreased, increasing the model 
+# accuracy but only up to a point, beyond which instability is caused.
 #
 # The reason is that when the space resolution becomes sufficiently fine relative to the 
 # time resolution, the distance that the wave travels in 1 time step may be larger than
@@ -20,24 +19,19 @@ Created on Fri Mar 06 12:44:26 2015
 # relative to the space step, ensuring that it is always sufficiently small whatever
 # space step is chosen.
 #
-# So we need to have a sufficiently fine spatial resolution so as to minimize numerical
-# diffusion, but given the spatial resolution the time resolution needs to be sufficiently,
-# comparatively fine to ensure stability. Given that numerical diffusion occurs when
-# derivatives are under-estimated due to a coarse grid, it stands to reason that spatial
-# resolution needs to be finest where gradients are expected to vary rapidly across space.
-# This might be the case near a boundary, e.g. near a land boundary or at the sea bed in a  
-# coastal hydrodynamic model.
-#
-# This example wraps up the model code from the 1D linear advection lesson into a function
-# which can be invoked specifying the space resolution. The difference is in how the dt
-# term is derived, being a function of the dx term. The proportionality constant, sigma, is
-# called the Courant Number, defined as:
+# This example simply generates several model runs of the 1D linear advection model but
+# with the dt term derived as a function of the dx term. The proportionality constant, 
+# here represented by sigma, is called the Courant Number, and defined in the general case 
+# as:
 #
 #   sigma = c*dt/dx < sigma_max
 #
-# This basically states that exists a value, sigma_max, that depends on the discritization used
-# that will ensure stability. As long as the realised sigma value is less than this value, the 
-# model will be stable. 
+# This basically states that there exists a value, sigma_max, that depends on the discritization 
+# used that will ensure stability. As long as the realised sigma value is less than this value, 
+# the model will be stable. 
+#
+# This example wraps up the model code from the 1D linear advection lesson into a function
+# which can be invoked specifying the space resolution.
 #
 # Points to note
 # --------------
@@ -58,7 +52,15 @@ Created on Fri Mar 06 12:44:26 2015
 #
 # 4. If we're only considering a fixed number of timesteps, changing the size of the time
 #    step obviously results in a smaller amount of advection in the model run, since a 
-#    smaller total time window is being simulated.
+#    smaller absolute time window is being simulated.
+#
+# 5. This example illustrates the need for a sufficiently fine spatial resolution so as to 
+#    minimize numerical diffusion, but given the spatial resolution the time resolution 
+#    needs to be sufficiently and comparatively fine to ensure stability. Given that numerical 
+#    diffusion occurs when derivatives are under-estimated due to a coarse grid, it stands 
+#    to reason that spatial resolution needs to be finest where gradients are expected to vary 
+#    rapidly across space. This might be the case near a boundary, e.g. near a land boundary 
+#    or at the sea bed in a coastal hydrodynamic model.
 #
 #
 
