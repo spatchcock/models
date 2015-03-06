@@ -62,7 +62,6 @@ Created on Fri Mar 06 12:44:26 2015
 #    rapidly across space. This might be the case near a boundary, e.g. near a land boundary 
 #    or at the sea bed in a coastal hydrodynamic model.
 #
-#
 
 import numpy as np                 #numpy is a library for array operations akin to MATLAB
 import matplotlib.pyplot as plt    #matplotlib is 2D plotting library
@@ -77,10 +76,10 @@ def linearconv(nx):
     # Instead of setting the dt term as an absolute, fixed value, let's define it relative to
     # dx. The proportionality constant is sigma, as represented by the Courant Number.
     sigma = 0.5
-    dt = sigma*dx  # 
+    dt = sigma*dx
 
-    u = np.ones(nx)      # defining a numpy array which is nx elements long with every value equal to 1.
-    u[.5/dx : 1/dx+1]=2  # setting u = 2 between 0.5 and 1 as per our I.C.s
+    u = np.ones(nx)        # defining a numpy array which is nx elements long with every value equal to 1.
+    u[.5/dx : 1/dx+1] = 2  # setting u = 2 between 0.5 and 1 as per our I.C.s
 
     un = np.ones(nx) # initializing our placeholder array, un, to hold the values we calculate for the n+1 timestep
 
