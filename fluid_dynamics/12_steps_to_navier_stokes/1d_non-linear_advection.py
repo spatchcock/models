@@ -39,9 +39,9 @@ import matplotlib.animation as animation
 #    unstable using the same parameters which provide stability in the linear model.
 #    Increasing the time resolution or decreasing the space resolution increases 
 #    stability. This is because the CFL condition is altered by the varying values
-#    of u, and that these values are, in some places greater than 1, which was the 
-#    advection speed in the linear model. So the ratio of time step and space step
-#    needs to be different to handle the larger advection speeds.
+#    of u, and that these values are greater than 1, which was the advection speed 
+#    in the linear model. So the ratio of time step and space step needs to be 
+#    different in this case to handle the larger advection speeds.
 #
 
 # %%
