@@ -61,34 +61,34 @@ Cu = np.zeros(N_x)     # placeholder for memoizing previous timestep concentrati
 # might be appropriate. Three choices are presented below. Comment/uncomment as required
 # or set u[] to another appropriate function of depth.
 
-### Constant function ###
+# Constant function
 
 # This simply sets the same decay rate for all values of x.
 
-#u[:] = 0.005
+# u[:] = 0.005
 
 
-### Decreasing function ###
+# Decreasing function
 
 # This drescribes taphonic decay rate as decreasing exponential with depth frmom
 # some maximum value at the surface. This is the simplest decreasing function that
 # asymptotes with depth.
 
 u_0           = 0.005                              # value at surface, i.e. x = 0
-u_attenuation = 0.05                               # rate at which decay rate decreases with depth
+u_attenuation = 0.5                               # rate at which decay rate decreases with depth
 u[0:]         = u_0 * np.exp(-u_attenuation*x[0:]) # exponentially decreasing taphonomic decay rate
 
 
-### Step function ###
+# Step function
 
 # This sets the decay rate as a constant across some limited upper interval of the
 # sediment. This resembles the commonly invoked concept of the Taphonomically Active Zone
 # (the "TAZ"). Of course, any other more complicated step function could be defined in a 
 # similar way.
 
-#max_depth_decay  = 10.0                               # Maximum depth of decay
-#max_x_decay      = int(max_depth_decay/max_depth*N_x) # Index of maximum decay depth
-#u[0:max_x_decay] = 0.005                              # Step function
+# max_depth_decay  = 10.0                               # Maximum depth of decay
+# max_x_decay      = int(max_depth_decay/max_depth*N_x) # Index of maximum decay depth
+# u[0:max_x_decay] = 0.005                              # Step function
 
 
 # %% DEFINE DEPTH DEPENDENT FUNCTION FOR SEDIMENTATION RATE
@@ -96,7 +96,7 @@ u[0:]         = u_0 * np.exp(-u_attenuation*x[0:]) # exponentially decreasing ta
 # In principle, sedimentation rate may have varied during the time in which a given
 # sediment interval has accumulated. For now, we'll just assume that it is constant.
 
-### Constant function ##
+# Constant function
 w[:] = 0.6                         
 
 
