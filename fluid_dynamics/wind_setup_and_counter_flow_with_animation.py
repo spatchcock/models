@@ -82,12 +82,12 @@ import numpy
 # %% Set up initial state and global variables
 
 # Numerics
-N  = 30       # basin size
+N  = 50       # basin size
 dx = 1.0/N    # distance step, i.e. distance between cells
 dt = 0.01*dx  # this needs to be quite small otherwise we get negative heights! 
               # i.e. water speed too fast, entire cell gets emptied in time step
 
-number_of_depth_intervals = 20
+number_of_depth_intervals = 50
 
 # Physics
 h          = 5.0    # height to datum (not the same as 'height' in the model 
@@ -117,7 +117,6 @@ tau     = numpy.zeros((number_of_depth_intervals,N+1))
 # Each cell initially has a height representing a fraction of the initial, constant 
 # water depth
 heights[:] = h/number_of_depth_intervals
-
     
 # %% Set up iteration-of-timestep function. We do this, rather than a loop, because
 # the animation pattern requires a callable function to drive each timestep
@@ -195,7 +194,7 @@ def animate(i): # Invoke model timestep and replot data on each iteration
     step()
     
     water_level_line.set_data(range(N+1), sum(heights))
-    speed_line.set_data(u[:,19][::-1],numpy.linspace(0,h,number_of_depth_intervals)) # reverse u data
+    speed_line.set_data(u[:,N/2][::-1],numpy.linspace(0,h,number_of_depth_intervals)) # reverse u data
     
     return speed_line, water_level_line
 

@@ -44,7 +44,7 @@ import matplotlib.animation as animation
 #    different in this case to handle the larger advection speeds.
 #
 
-# %%
+# %% Define invokable function for stepping through time
 
 def step():
     un = u.copy()
@@ -54,7 +54,7 @@ def step():
         u[i] = un[i]-un[i]*dt/dx*(un[i]-un[i-1])
 
 
-# %%
+# %% Define animation functions
 
 def init():
     line.set_data([], [])
@@ -66,13 +66,13 @@ def animate(i):
     return line,
 
 
-# %%
+# %% Set up constants and initial conditions
 
-xmax = 2.   # domain length
-nx = 21     # try changing this number from 41 to 81 and Run All ... what happens?
-dx = xmax/(nx-1)
-nt = 20      # nt is the number of timesteps we want to calculate
-dt = .025   # dt is the amount of time each timestep covers (delta t)
+xmax = 2.     # domain length
+nx   = 21     # 
+dx   = xmax/(nx-1)
+nt   = 20     # nt is the number of timesteps we want to calculate
+dt   = .025   # dt is the amount of time each timestep covers (delta t)
 
 u  = np.ones(nx)  # numpy function ones()
 un = np.ones(nx)  # initialize a temporary array for using in each timestep
@@ -81,16 +81,13 @@ un = np.ones(nx)  # initialize a temporary array for using in each timestep
 u[.5/dx : 1/dx+1] = 2  # setting u = 2 between 0.5 and 1 as per our I.C.s
 
 
-# %%
+# %% Create plot and run
 
 fig = plt.figure()
 ax = fig.add_subplot(111,xlim=(0,xmax), ylim=(0,10))
 ax.grid()
 line, = ax.plot([], [], lw=3)
 
-
-# %%
-
+# Run!
 ani = animation.FuncAnimation(fig, animate, frames=1, interval=100, blit=True, init_func=init)
-
 plt.show()
