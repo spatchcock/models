@@ -45,16 +45,18 @@ import matplotlib.pyplot as plt    #and the useful plotting library
 #    derived by adding the forward and backward Taylor series expansions).
 #
 # 3. The dt value is defined in relation to dx**2 as opposed to just dx as in the 
-#    previous examples. Presumably this is because if the dx**2 which appears in the
+#    previous examples. Presumably this is because of the dx**2 which appears in the
 #    discritized equation. Also the diffusion speed appears explicitly in the definition
 #    of dt (previously it was always unity so ignored).
 #
-# %%
+# %% Define invokable function for stepping though time
 
 def step():
     un = u.copy() ##copy the existing values of u into un
     for i in range(1,nx-1):
         u[i] = un[i] + nu*dt/dx**2*(un[i+1]-2*un[i]+un[i-1])
+
+# %% Set up animation functions
 
 def init():
     line.set_data([], [])
@@ -66,7 +68,7 @@ def animate(i):
     return line,
 
 
-# %%
+# %% Set up parameters and initial conditions
 
 xmax  = 2.0
 nx    = 41
@@ -82,7 +84,7 @@ u[.75/dx : 1.25/dx+1] = 10  # setting u = 2 between 0.5 and 1 as per our I.C.s
 
 un = np.ones(nx) # our placeholder array, un, to advance the solution in time
 
-# %%
+# %% Generate plot and run model
 
 fig = plt.figure()
 ax = fig.add_subplot(111,xlim=(0,xmax), ylim=(0,10))
@@ -90,8 +92,7 @@ ax.grid()
 line, = ax.plot([], [], lw=3)
 
 
-# %%
-
+# Run!
 ani = animation.FuncAnimation(fig, animate, frames=1, interval=100, blit=True, init_func=init)
 
 plt.show()
