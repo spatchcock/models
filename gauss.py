@@ -32,11 +32,11 @@ y = numpy.arange(-domain_range/2,domain_range/2,1)
 
 def two_d_gauss(x, y, A, meanx, meany, stdevx, stdevy):
     
-    g = numpy.zeros((size(x), size(y)))
+    g = numpy.zeros((numpy.size(x), numpy.size(y)))
     
-    for i in numpy.arange(0, size(x), 1):
-        for j in numpy.arange(0, size(y), 1):
-            g[i][j] = A * exp(-((((x[i] - meanx)**2.0)/(2.0*(stdevx**2.0))) + (((y[j] - meany)**2.0)/(2.0*(stdevy**2.0)))))
+    for i in numpy.arange(0, numpy.size(x), 1):
+        for j in numpy.arange(0, numpy.size(y), 1):
+            g[i][j] = A * numpy.exp(-((((x[i] - meanx)**2.0)/(2.0*(stdevx**2.0))) + (((y[j] - meany)**2.0)/(2.0*(stdevy**2.0)))))
     
     return g
 
@@ -71,8 +71,8 @@ plt.show()
 # (Integration is simple since grid resolution is unity. No *dx *dy needed.)
 #
 within_one_stdev = []
-for i in numpy.arange(0, size(x), 1):
-        for j in numpy.arange(0, size(y), 1):
+for i in numpy.arange(0, numpy.size(x), 1):
+        for j in numpy.arange(0, numpy.size(y), 1):
             
             # Use pythagoras to find those cells within 1 std dev
             if math.sqrt(x[i]**2 + y[j]**2) <= stdevx:
