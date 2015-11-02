@@ -14,13 +14,14 @@ numpy.set_printoptions(precision=3)
 # %% Numerical scheme
 
 w = 0.05
+D = 0.0005
 
 L = 1.
 J = 500
 dx = float(L)/float(J-1)
 x_grid = numpy.array([j*dx for j in range(J)])
 
-courant = 1
+courant = 0.5
 
 dt = dx*courant/w
 
@@ -31,7 +32,8 @@ t_grid = numpy.array([n*dt for n in range(N)])
 
 sigma = float(w*dt)/float((4.*dx))
 sigma
-float(w*dt)/float((dx))
+
+lamda = float(D*dt)/(2*dx**2) 
 
 # %% Initial conditions
 
@@ -43,13 +45,13 @@ C = gaussian(x_grid, 5, 0.15, 0.03)
 
 # %% Set up matrices
 
-A_C = numpy.diagflat([-sigma for i in range(J-1)], -1) +\
-      numpy.diagflat([1.-sigma]+[1 for i in range(J-2)]+[1.+sigma]) +\
-      numpy.diagflat([sigma for i in range(J-1)], 1)
+A_C = numpy.diagflat([-(sigma+lamda) for i in range(J-1)], -1) +\
+      numpy.diagflat([1.-sigma+lamda]+[1+2*lamda for i in range(J-2)]+[1.+sigma+lamda]) +\
+      numpy.diagflat([sigma-lamda for i in range(J-1)], 1)
         
-B_C = numpy.diagflat([sigma for i in range(J-1)], -1) +\
-      numpy.diagflat([1.+sigma]+[1. for i in range(J-2)]+[1.-sigma]) +\
-      numpy.diagflat([-sigma for i in range(J-1)], 1)
+B_C = numpy.diagflat([sigma+lamda for i in range(J-1)], -1) +\
+      numpy.diagflat([1.+sigma-lamda]+[1.-2*lamda for i in range(J-2)]+[1.-sigma-lamda]) +\
+      numpy.diagflat([lamda-sigma for i in range(J-1)], 1)
 
 # %% Run
 
@@ -69,7 +71,7 @@ for t in numpy.arange(1,N-1):
 fig = pyplot.figure()
 
 # Limit x-axis to hide stationary points
-ax = fig.add_subplot(111, xlim=(0, L), ylim=(0, 10))
+ax = fig.add_subplot(111, xlim=(0, L), ylim=(0, 5))
 ax.grid()
 
 #pyplot.plot(x_grid, C_record[0], lw=3, color='k')
@@ -99,6 +101,6 @@ pyplot.show()
 anim = animation.FuncAnimation(fig, 
                               animate, 
                               frames=N,
-                              interval=50, 
+                              interval=100, 
                               blit=True, 
                               init_func=init)
