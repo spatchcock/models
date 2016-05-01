@@ -11,11 +11,13 @@ import matplotlib.animation as animation
 
 numpy.set_printoptions(precision=3)
 
+gaussian = lambda z, height, position, hwhm: height * numpy.exp(-numpy.log(2) * ((z - position)/hwhm)**2)
+
 # %% Numerical scheme
 
-w = 0.01
+w = 0.1
 D = 0.001
-lamda = 0.00
+lamda = 0.01
 
 L = 1.
 J = 500
@@ -25,9 +27,8 @@ x_grid = numpy.array([j*dx for j in range(J)])
 courant = 0.5
 
 dt = dx*courant/w
-w=0.0
 
-T = 200
+T = 100
 N = int(T/dt + 1)
 
 t_grid = numpy.array([n*dt for n in range(N)])
@@ -44,8 +45,9 @@ mu = float(lamda*dt/2)
 
 C =  numpy.zeros(J)
 #C[100:200] = 5
+#C = gaussian(x_grid, 1, 0.1, 0.03)
 
-gaussian = lambda z, height, position, hwhm: height * numpy.exp(-numpy.log(2) * ((z - position)/hwhm)**2)
+P = 0 
 P = gaussian(x_grid, 0.01, 0.5, 0.03)
 
 # %% Set up matrices
@@ -76,7 +78,7 @@ for t in numpy.arange(1,N-1):
 fig = pyplot.figure()
 
 # Limit x-axis to hide stationary points
-ax = fig.add_subplot(111, xlim=(0, L), ylim=(0, 50))
+ax = fig.add_subplot(111, xlim=(0, L), ylim=(0, 2))
 ax.grid()
 
 #pyplot.plot(x_grid, C_record[0], lw=3, color='k')

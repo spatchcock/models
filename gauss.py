@@ -16,14 +16,14 @@ Created on Fri Jan 31 21:20:55 2014
 # Turns out to be ~39.3% (and verified analytically elsewhere)
 
 import matplotlib.pyplot as plt
-import numpy as np
+import numpy
 from mpl_toolkits.mplot3d import Axes3D
 
 domain_range = 500
 
 A = 100
 meanx   = 0.0
-stdevx  = 60.0
+stdevx  = 30.0
 meany   = 0.0
 stdevy  = 60.0
 
