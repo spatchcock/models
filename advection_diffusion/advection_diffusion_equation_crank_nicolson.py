@@ -14,7 +14,7 @@ numpy.set_printoptions(precision=3)
 # %% Numerical scheme
 
 w = 0.05
-D = 0.0005
+D = 0.001
 
 L = 1.
 J = 500

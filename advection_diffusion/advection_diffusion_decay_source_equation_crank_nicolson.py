@@ -48,7 +48,7 @@ C =  numpy.zeros(J)
 #C = gaussian(x_grid, 1, 0.1, 0.03)
 
 P = 0 
-P = gaussian(x_grid, 0.01, 0.5, 0.03)
+P = gaussian(x_grid, 0.1, 0.2, 0.03)
 
 # %% Set up matrices
 
@@ -78,7 +78,7 @@ for t in numpy.arange(1,N-1):
 fig = pyplot.figure()
 
 # Limit x-axis to hide stationary points
-ax = fig.add_subplot(111, xlim=(0, L), ylim=(0, 2))
+ax = fig.add_subplot(111, xlim=(0, L), ylim=(0, np.max(C_record)*2))
 ax.grid()
 
 #pyplot.plot(x_grid, C_record[0], lw=3, color='k')
